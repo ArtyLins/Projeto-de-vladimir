@@ -1,0 +1,205 @@
+Spatial Math 3D — gráficos 2D e acessibilidade
+
+COMO ABRIR
+1. Extraia TODO o ZIP para uma pasta. Não copie apenas os três arquivos antigos.
+2. Abra essa pasta no VS Code.
+3. Clique com o botão direito em index.html e escolha Open with Live Server.
+4. No navegador, pressione Ctrl+F5 para limpar a versão anterior do cache.
+Não é necessário npm install. vendor/ e fonts/ devem permanecer junto aos arquivos.
+O programa também abre diretamente por index.html no navegador; dependendo das permissões, fontes locais podem variar. Live Server oferece o comportamento mais consistente.
+
+GRAVAÇÃO EM VÍDEO
+Clique em ● Gravar para registrar a cena 3D, os movimentos da câmera e as animações. Clique em ■ Parar para finalizar e baixar. Baixar vídeo permite repetir o download do último vídeo.
+A gravação captura a cena, sem menus ou áudio. O programa prioriza MP4 real (H.264 ou formato MP4 oferecido pelo navegador). Se não houver suporte, grava em WebM e informa o formato; o botão indica Baixar MP4 ou Baixar WebM. Resolução até 1280 × 720 e 30 quadros por segundo. O tamanho do quadro permanece fixo mesmo ao redimensionar a janela; o fundo acompanha o tema.
+A gravação funciona nos navegadores que oferecem captura de canvas e MediaRecorder. O programa verifica a compatibilidade e informa se não estiver disponível. O vídeo é processado localmente no navegador.
+Mantenha recording.js junto aos demais arquivos. Ao alcançar 200 MB, o vídeo é finalizado para baixar.
+
+NAVEGAÇÃO NO PC E NO CELULAR
+No computador, Laboratório > Aparência > Navegação oferece velocidade e sensibilidade da caminhada. Os menus também abrem em painel inferior.
+Voltar ao gráfico fecha os painéis; Recolher controles esconde câmera e resultados. O indicador XYZ acompanha a câmera.
+O tutorial aparece no primeiro acesso e adapta as instruções para teclado/mouse ou toque. Rever tutorial de navegação permite reabri-lo em Aparência.
+As preferências são salvas no navegador. Mantenha mobile-enhancements.js também na versão para PC.
+
+NAVEGAÇÃO NO CELULAR
+A barra superior da cena reúne Voltar à cena, Recolher e a gravação. O indicador XYZ e os controles de câmera ficam abaixo, sem cobrir textos de teclado. Gravar permanece visível na caminhada e com controles recolhidos. Mantenha mobile-layout.js junto aos demais arquivos.
+O controle padrão agora é o joystick: arraste para indicar a direção e a intensidade do movimento. A opção Setas continua disponível em Laboratório > Aparência > Navegação no celular.
+Nesse menu você também pode escolher velocidade, sensibilidade e layout para canhotos. As preferências ficam salvas no navegador e nos projetos JSON.
+As ferramentas abrem em painel inferior. Voltar ao gráfico fecha os painéis; Recolher controles esconde os botões de câmera e resultados.
+O indicador XYZ acompanha a orientação da câmera. O tutorial aparece no primeiro acesso pelo celular e pode ser reaberto em Aparência.
+Mantenha mobile-enhancements.js junto aos demais arquivos.
+Ao abrir em posição vertical, o programa sugere girar o aparelho. Abrir em paisagem solicita tela cheia e orientação horizontal quando o navegador permite. Continuar assim permite usar na vertical.
+Ativar caminhada mostra o joystick (ou setas) do lado esquerdo e Subir/Descer do lado direito. Mantenha os botões pressionados para mover; combine dois toques para andar e ajustar a altura. Arraste na cena para olhar ao redor. Sair da caminhada retorna ao modo de órbita.
+A orientação automática depende do navegador e do aparelho. Caso a tela não vire, gire o celular e habilite a rotação automática.
+Mantenha mobile-controls.js junto aos arquivos do programa.
+
+CONTROLES DA INTERFACE
+• + e −: aproximar e afastar; ⌂: recentrar; XY/XZ/YZ: vistas dos planos matemáticos.
+• Gráficos: lista do conteúdo atual da cena, com cor, mostrar/ocultar e excluir. Superfícies possuem controles individuais; os demais módulos são gerenciados como um gráfico completo.
+• Resultados: resumo recolhível do cálculo e análise do ponto, com acesso à ferramenta atual.
+• ↶ e ↷: desfazer/refazer até 30 alterações por sessão. Atalhos Ctrl+Z e Ctrl+Shift+Z fora dos campos de texto. As animações são restauradas pausadas. Respostas de atividades são preservadas.
+• Aparência > Rótulos dos eixos: tamanho padrão/grande/muito grande, números e letras independentes. Essas opções são incluídas nos projetos JSON.
+• Expressões e números inválidos recebem mensagens junto aos campos. Os resultados dos módulos mantêm os avisos sobre domínio e limitações numéricas.
+• ▣ na barra superior: modo apresentação. Sair da apresentação ou Esc retorna à interface.
+• Sobre esta opção: explicações expansíveis sobre amostragem, tolerâncias, passos numéricos e rótulos.
+Mantenha interface-tools.js junto aos outros arquivos do programa.
+
+TEMA NOTURNO
+Use o botão de lua/sol na barra superior. A escolha é salva no navegador. O tema muda os menus, a cena, os rótulos e gráficos auxiliares sem regenerar o cálculo ou mudar a câmera. As paletas continuam disponíveis. Mantenha theme.js junto aos outros arquivos.
+
+TELA INICIAL
+Ao abrir, a logo aparece e desaparece suavemente em cerca de 2,6 segundos, seguida do cartão de boas-vindas. Pular abertura ou Esc avança imediatamente. A preferência do sistema por movimento reduzido é respeitada.
+A cena inicia com grade e eixos, sem gráfico e sem painel ou categoria selecionada. As opções de visualização permanecem ativas para os gráficos que você gerar.
+O cartão oferece atalhos para funções, integrais, EDOs e atividades guiadas, instruções de navegação e abertura de projeto JSON. Explorar a cena, × ou Esc fecha o cartão. O botão ? reabre a ajuda sem apagar o trabalho.
+O botão Limpar gráfico fica na barra superior (ícone ⌫ no celular). Remove os gráficos e pontos selecionados, interrompe as animações e mantém a câmera, entradas, paleta e configurações da grade/eixos.
+Mantenha welcome.js junto aos demais arquivos ao atualizar.
+
+NAVEGAÇÃO REORGANIZADA
+Gráficos: funções, domínio/interseções e parametrizações.
+Cálculo: derivadas/Hessiana, integrais e Taylor.
+Dinâmica: EDOs, sistemas 2D, campos 3D e bifurcações.
+Laboratório: exemplos, camadas, aparência, projetos/exportações e câmera/animação.
+Clique em um grupo para escolher uma ferramenta ou buscar pelo nome. O botão Módulos abre a lista completa. O botão × fecha o painel. Opções complementares ficam em seções expansíveis.
+Na EDO de segunda ordem, os campos do intervalo mostram t em vez de x. Recentrar câmera retorna à posição definida ao gerar o módulo atual.
+
+REVISÃO MATEMÁTICA
+Consulte REVISAO-MATEMATICA.md para correções, casos de teste e limitações. A revisão inclui raio fixo das esferas, exemplo triangular corrigido, buscas normalizadas por escala, derivadas com h e h/2, valores pequenos preservados na exibição e curvas de nível/interseções com verificação de resíduo.
+
+RECURSOS MANTIDOS
+• RK45 adaptativo: disponível em EDO, Sistemas e Campos 3D. Escolha RK45 no método. h é o passo máximo; tolerâncias relativa e absoluta controlam a estimativa do erro local. A animação usa o tempo físico, não o índice dos pontos.
+• Nulclinas: em Sistemas, marque Mostrar nulclinas. P=0 aparece em ciano e Q=0 em coral, no instante das setas. Gere novamente após mudar as entradas.
+• Comparação: em Sistemas, escreva até 6 condições adicionais, uma por linha, no formato 1.5, 0 (ponto decimal). O seletor escolhe a trajetória animada. O gráfico temporal compara x(t) ou y(t), e a tabela mostra estado final e interrupções. CSV exporta todas as condições geradas com identificação.
+• Bifurcações: equação escalar x′=f(x,mu), busca de equilíbrios em uma faixa do parâmetro mu, estabilidade pela derivada e exportação em PNG/CSV. Exemplos de forquilha, sela–nó e transcrítica.
+• Offline: Three.js, OrbitControls e fontes já estão incluídos. A aplicação não faz requisições externas. Live Server pode funcionar com a internet desligada.
+• Atividades guiadas: 8 estudos com 24 etapas, respostas escritas, explicações comentadas e exportação do caderno.
+• Camadas: mostrar/ocultar superfícies, trajetórias, vetores, marcadores, contornos, análise, grade e eixos. Os cálculos e as exportações de dados são mantidos. Opções salvas no JSON.
+
+GRÁFICOS E PROJETOS
+Use Ampliar gráfico para ler os gráficos temporais e o diagrama em uma janela maior. Feche pelo botão ou Esc. O gráfico temporal ampliado acompanha a reprodução.
+Inspetor: PNG da cena 3D, PNG temporal, CSV e projetos JSON.
+Bifurcações: botão próprio para PNG do diagrama.
+Projetos anteriores continuam aceitos; as opções novas recebem valores padrão.
+Todos os módulos anteriores estão incluídos.
+
+LIMITES MATEMÁTICOS
+RK45 usa o par Dormand–Prince 5(4). As tolerâncias controlam uma estimativa do erro local, sem garantia de erro global. É um método explícito: sistemas rígidos podem exigir outro integrador. Há limites de passos/tentativas e de magnitude; uma solução interrompida é indicada no resultado.
+A interpolação dos marcadores é linear entre amostras; não usa saída densa de ordem elevada. Curvas com poucos pontos podem parecer poligonais mesmo quando os estados amostrados são precisos: diminua h se precisar melhorar a resolução visual.
+Nulclinas são amostradas: ramos estreitos, zeros sem mudança de sinal, regiões inteiramente nulas e descontinuidades podem não ser representados adequadamente. Para sistemas dependentes do tempo, são uma fotografia do campo em um instante.
+O diagrama de bifurcações cobre equilíbrios de equações escalares suaves. A busca é parcial e não determina exatamente os parâmetros de bifurcação. Não inclui ciclos periódicos, Hopf ou bifurcações de sistemas 2D/3D. Pontos com derivada próxima de zero recebem classificação inconclusiva.
+Derivadas de superfícies são numéricas. Funções por partes, abs, sqrt e outras expressões com possíveis quebras recebem uma checagem local por amostragem. Quando as amostras indicam falta de suavidade, o programa omite gradiente/Hessiana/plano tangente. A checagem pode perder singularidades; passar nela não prova diferenciabilidade.
+Soluções exatas opcionais são fornecidas pelo usuário; o programa confere as condições iniciais, sem provar que a expressão resolve a EDO.
+
+VALIDAÇÃO DESTA VERSÃO
+• RK45 contra exponencial, oscilador, sistema com tempo inicial não nulo e hélice 3D.
+• Integração para trás, refinamento de tolerância, rejeição de passos, domínio e limites.
+• Interpolação pelo tempo físico, nulclinas e descarte de cruzamentos de polos.
+• Equilíbrios simples e degenerados; estabilidade no exemplo de forquilha.
+• Comparação, camadas, JSON atual/anterior, CSV e PNG.
+• Os 8 exemplos, checagem de suavidade e interface móvel.
+• Navegador local sem requisições externas nem erros JavaScript; abertura direta com rede desligada.
+Testes numéricos opcionais: node tests/numerical.cjs e node tests/review.cjs
+Teste de interface: requer Playwright com Chromium e servidor local em http://127.0.0.1:8765/; execute a partir da pasta que contém lab-edo/.
+
+REFERÊNCIA E LICENÇAS
+RK45: https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.RK45.html
+Three.js r128 e OrbitControls: licença MIT em vendor/THREE-LICENSE.txt.
+Fontes DM Mono e Space Grotesk: licenças OFL em fonts/.
+
+ATIVIDADES GUIADAS
+Abra Laboratório > Atividades guiadas. Escolha um dos oito estudos e carregue o exemplo. Use Retomar atividade para voltar às perguntas. Cada estudo tem três etapas, espaço para respostas e explicações que você pode revelar. Registrar uma etapa indica apenas que você a respondeu; não é uma correção automática.
+As respostas ficam neste navegador e no projeto JSON exportado. Projetos antigos continuam compatíveis. Exporte o caderno em Markdown para ler no VS Code. Reiniciar progresso mantém suas respostas.
+Copie a pasta inteira, incluindo activities.js, e atualize o navegador com Ctrl+F5.
+
+CORREÇÃO DAS PALETAS
+Trocar paleta ou cores individuais atualiza a aparência sem gerar a superfície inicial, recalcular resultados ou reiniciar a câmera e as animações. As cores que identificam métodos, coordenadas e estabilidade acompanham a paleta e continuam correspondendo às respectivas legendas.
+
+PALETAS COMPLETAS
+Linhas, setas, marcadores, colunas das integrais, amostras do integrando, malhas, eixos locais, gráficos temporais e bifurcações acompanham a paleta. Legendas usam amostras coloridas com nomes. A troca usa os dados já desenhados, preservando resultados e animações. Os conjuntos mantêm cores distintas para os métodos e trajetórias.
+
+ABERTURA COM OPÇÕES ATIVAS
+O programa inicia com grade e eixos, sem gerar a superfície inicial. Camadas e opções de visualização ficam ativadas, incluindo superfícies para que integrais e outros gráficos apareçam ao gerar. Caminhada e acompanhamento automático da câmera continuam desligados. A opção Camadas > Superfícies controla todas as superfícies, incluindo as integrais; não controla a geração do gráfico inicial.
+
+INSPETOR DO PONTO E PLANO TANGENTE
+Clique em uma superfície explícita z=f(x,y) para abrir a janela com coordenadas, derivadas, gradiente, normal e plano tangente. Limpar seleção remove o ponto e seus objetos de análise, preservando a superfície e os pontos críticos encontrados. Também há um botão no menu Derivadas e Hessiana, e clicar numa região vazia da cena remove a seleção. O botão × fecha somente a janela; −/+ recolhe ou expande os detalhes. Arrastar para orbitar não seleciona pontos. Esferas e outras representações não são analisadas por esta ferramenta. Copie também point-inspector.js ao atualizar o programa.
+
+PONTO POR COORDENADAS
+Em Funções e gráficos, clique Digitar ponto para análise. Informe X e Y e clique Selecionar ponto (ou pressione Enter). Z é calculado por f(X,Y); não é digitado livremente. Você também pode editar as coordenadas na janela após clicar numa superfície. Pontos fora do domínio, fora do recorte de altura ou fora do domínio real da função são rejeitados sem remover a seleção anterior.
+
+PALETAS CIENTÍFICAS E ACESSIBILIDADE
+Em Aparência > Paleta, estão disponíveis Okabe–Ito, Cividis e Viridis.
+Okabe–Ito usa cores distintas para curvas e categorias. Cividis e Viridis
+usam gradientes completos de 256 cores nas superfícies, derivados dos
+mapas de cores do Matplotlib. As curvas e legendas usam cores distintas.
+Alto contraste e baixa visão continuam disponíveis. A escolha da paleta
+mantém o gráfico, a câmera e o módulo atual. Personalizar as duas cores
+do gradiente substitui o mapa científico por um gradiente entre elas.
+Referências: https://jfly.uni-koeln.de/color/
+https://matplotlib.org/stable/users/explain/colors/colormaps.html
+
+CORREÇÃO DOS CONTROLES DA CENA
+Cor por altura altera as cores das superfícies existentes sem gerar outro
+gráfico. Domínio altera a grade e os eixos; com uma superfície explícita
+ativa, atualiza também a amostragem da função atual. Os demais módulos
+usam os intervalos próprios de suas ferramentas.
+
+MENUS NO CELULAR
+Abrir uma categoria não coloca o foco na busca. Toque no campo para
+digitar. Os nomes e ícones das ferramentas permanecem visíveis em telas
+pequenas. Os painéis têm rolagem e acompanham a área visível da tela.
+
+TUTORIAL DE USO
+Acesse Laboratório > Como usar. São 18 guias sobre navegação, ferramentas
+matemáticas, atividades, aparência, projetos, exportações e vídeos.
+A busca aceita palavras com ou sem acento. Abrir ferramenta abre seu
+painel sem gerar ou substituir um estudo automaticamente.
+
+PREFERÊNCIAS DO USUÁRIO
+Aparência, cores personalizadas, espessura da interseção, rótulos dos
+eixos, tema, velocidade, sensibilidade, controles de caminhada e
+velocidade de animação são salvos automaticamente neste navegador.
+Restaure os padrões em Aparência > Preferências do usuário.
+Mostrar interseção continua desativado ao iniciar. Fórmulas e estudos
+são salvos pelo projeto JSON. As preferências pertencem ao endereço
+do site: mudar o túnel/endereço ou apagar os dados do navegador pode
+impedir a recuperação dessas escolhas. Cada dispositivo salva as suas.
+
+BOAS-VINDAS
+Após a primeira exibição, a tela de boas-vindas não abre automaticamente
+nesse navegador e endereço. Ela continua disponível pelo botão de ajuda.
+A animação da logo permanece na abertura.
+
+
+NOVIDADES — FUNÇÕES DE UMA VARIÁVEL E ACESSIBILIDADE
+Abra Gráficos > Gráficos 2D ou o atalho da tela de boas-vindas. Ative até quatro funções, use x nas expressões e informe o intervalo. Plotar funções 2D abre um plano cartesiano independente da cena 3D. Editar funções permite mudar fórmulas e usar Tangente e integral. Voltar ao 3D preserva a cena anterior.
+As funções são identificadas por nome, cor, tipo de linha e marcador. Arraste para mover, use a roda ou dois dedos para ampliar. Pelo teclado: setas deslocam, + e - mudam o zoom, Home ajusta e Tab sai do gráfico.
+A descrição apresenta aproximações de raízes, extremos e interseções. A tabela contém 21 pontos por função. CSV exporta 101 pontos por função; PNG exporta o gráfico com legenda. Tangentes e integrais definidas têm campos próprios no painel.
+Ouvir gráfico percorre o intervalo de x da função escolhida: tons mais agudos indicam y maior, pontos sem valor real ficam em silêncio. Volume e duração são ajustáveis. Parar som interrompe a reprodução; sair da área 2D, trocar função, mudar de aba do navegador ou perder o foco também interrompe. O som só começa após ação do usuário. A faixa sonora é relativa à função escolhida e ao intervalo informado; não serve para comparar escalas entre funções.
+O botão Aa e Laboratório > Acessibilidade oferecem ampliação dos textos a 125%, 150% e 200%, contraste reforçado, redução de movimentos e ativação/desativação dos atalhos F, R e /. As preferências são salvas no navegador separadamente das fórmulas.
+Use Tab/Shift+Tab, Enter e Esc para acessar os controles. A cena 3D focalizada aceita setas para girar, +/- para zoom e Home para recentrar. Os links que surgem no começo da navegação por teclado levam à acessibilidade e à descrição dos resultados.
+Os gráficos possuem alternativas textuais e os resultados usam regiões de anúncio para leitores de tela. Os tutoriais explicam as ferramentas novas. Projetos JSON salvam também o estado dos gráficos 2D.
+Mantenha cartesian-math.js, cartesian.js, accessibility.js e accessibility.css junto aos demais arquivos. Não precisa instalar dependências para usar.
+
+LIMITES DAS ANÁLISES E DA AVALIAÇÃO
+Raízes, extremos e interseções são buscas por amostragem, sem garantia de uma lista completa. Funções com singularidades ou oscilações rápidas exigem cuidado. Valores não finitos ou com módulo acima de 10^12 são omitidos por limite numérico. O ajuste automático usa percentis para evitar que um pico domine a escala; use zoom/deslocamento para observar valores excluídos da janela. A integral usa Simpson com refinamentos; a diferença numérica não é cota de erro, e integrais impróprias não são suportadas.
+A compatibilidade foi verificada com testes automatizados e inspeção em navegador de computador e emulação móvel. Não houve teste em aparelho físico nem validação manual com NVDA, JAWS ou VoiceOver. Isso não constitui certificação de conformidade WCAG nem avaliação com o público-alvo.
+
+
+INTERFACE 2D — GRÁFICO AMPLIADO
+O gráfico agora ocupa a altura disponível da tela. As informações ficam em painel lateral com quatro abas: Resumo (descrição), Análise (interseções, tangentes e integrais), Dados (consulta de pontos, tabela e PNG/CSV) e Som (volume e reprodução).
+Use Recolher informações ou o botão × do painel para expandir o gráfico; Informações reabre o painel. No celular e em janelas menores, o painel inicia recolhido e abre sobre a lateral, preservando o espaço do gráfico. As abas aceitam setas esquerda/direita, Home e End pelo teclado.
+
+ACESSIBILIDADE AVANÇADA
+1. Em Gráficos 2D > Informações > Dados, escolha a função e o passo em x. Use Ponto anterior/Próximo ponto ou as setas no controle de pontos. Home/End vão aos limites. O ponto atual é destacado e suas coordenadas ficam disponíveis em texto para o leitor de tela.
+2. Em Pontos importantes, filtre raízes, extremos ou interseções aproximadas. Use os botões anterior/próximo. A busca é limitada à amostragem e pode não localizar todos os pontos.
+3. A aba Análise descreve intervalos crescentes, decrescentes, aproximadamente constantes, sem amostra finita e possíveis descontinuidades/variações rápidas. Essas observações são numéricas, não provas de monotonicidade ou continuidade.
+4. Em Resumo, as fórmulas são apresentadas em MathML e também por extenso. O suporte à navegação matemática depende da combinação de navegador e leitor de tela; a versão por extenso continua disponível.
+5. Em Som, os sinais de eventos são opcionais: raiz = sinal agudo; interseção = dois sinais; ponto indefinido = grave. Há opção separada para ouvir pontos na exploração manual. O volume acompanha o controle de áudio. Sair da aba/painel ou perder o foco interrompe o áudio.
+6. Para cortes de z=f(x,y), plote uma superfície explícita, abra Gráficos > Cortes acessíveis 3D, escolha a superfície e fixe x ou y. A curva 2D usa os parâmetros da superfície plotada. Leia a descrição dos eixos: o x horizontal do 2D representa a variável livre; o y vertical representa z. A cena 3D é preservada. Esferas e superfícies paramétricas não têm esse corte automático.
+7. Modo leitura simplificado está na barra do gráfico 2D e no painel Acessibilidade. Ele reúne fórmulas, descrições, resultados e consulta de pontos sem a cena. O tamanho do texto vai de 100% a 400%. A barra de fechamento permanece acessível ao rolar. Esc fecha o modo.
+8. Em Laboratório > Acessibilidade > Curvas, marcadores e grade, ajuste espessura das curvas 2D, marcadores, rótulos 2D, intensidade da grade 2D/3D e espaçamento. Os ajustes são lembrados no navegador. Os rótulos 3D continuam com controles próprios em Aparência.
+Mantenha formula-accessibility.js e advanced-accessibility.js junto aos demais arquivos.
+
+
+TIPOGRAFIA PADRONIZADA
+A interface usa Space Grotesk em menus, campos, botões, resultados, tabelas, tutoriais e instruções. Os rótulos 2D/3D, a bússola, os gráficos temporais e as imagens 2D exportadas usam a mesma família. Os pesos 400, 500, 600 e 700 são fornecidos localmente, sem depender de serviços externos de fontes.
+Tamanhos-base: texto/controles 14 px, campos no celular 16 px, textos auxiliares 12 px, títulos de seção 18 px. As preferências de ampliação continuam funcionando. Expressões MathML preservam a tipografia matemática do navegador para frações, potências e símbolos.
+Mantenha typography.css e typography.js junto aos arquivos. O aplicativo aguarda as fontes locais e redesenha os rótulos dos gráficos para evitar fontes diferentes na abertura.
