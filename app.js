@@ -811,6 +811,7 @@ function adaptiveOptions(prefix){
 }
 function integrateODE(f,x0,y0,end,h,method,options={}) {
   if(method==='rk45'){const r=adaptiveRK45((t,p)=>[f(t,p[0])],x0,[y0],end,{...options,maxStep:h});return {...r,points:r.points.map(p=>({x:p.t,y:p.state[0]})),stopped:!!r.reason};} 
+  if(typeof integrateFixedODE==='function')return integrateFixedODE(f,x0,y0,end,h,method);
   const points=[{x:x0,y:y0}]; let x=x0,y=y0, stopped=false;
   const direction=Math.sign(end-x0);
   for(let i=0; direction*(end-x)>1e-12 && i<10000; i++) {

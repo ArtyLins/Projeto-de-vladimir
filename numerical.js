@@ -1,4 +1,32 @@
 'use strict';
+// Fixed-step methods used by the first-order ODE module.
+function odeEulerStep(f,x,y,h){return y+h*f(x,y);}
+function odeHeunStep(f,x,y,h){const k1=f(x,y);return y+h*(k1+f(x+h,y+h*k1))/2;}
+function odeRK4Step(f,x,y,h){const k1=f(x,y),k2=f(x+h/2,y+h*k1/2),k3=f(x+h/2,y+h*k2/2),k4=f(x+h,y+h*k3);return y+h*(k1+2*k2+2*k3+k4)/6;}
+function odeStepFixed(f,x,y,h,method){
+  if(method==='euler')return odeEulerStep(f,x,y,h);
+  if(method==='heun')return odeHeunStep(f,x,y,h);
+  if(method==='rk4')return odeRK4Step(f,x,y,h);
+  throw Error('Método numérico não reconhecido.');
+}
+function integrateFixedODE(f,x0,y0,end,h,method,{limit=10000,bound=1e6}={}){
+  if(![x0,y0,end,h,bound].every(Number.isFinite)||h<=0||!['euler','heun','rk4'].includes(method)||limit<1)throw Error('Configuração inválida do método numérico.');
+  const points=[{x:x0,y:y0}],direction=Math.sign(end-x0),steps=Math.ceil(Math.abs(end-x0)/h)+1;
+  let x=x0,y=y0,stopped=false,reason='';
+  if(steps-1>limit){stopped=true;reason='limite de passos';return {points,stopped,reason};}
+  for(let i=0;direction*(end-x)>1e-12&&i<limit;i++){
+    const step=direction*Math.min(h,Math.abs(end-x));
+    try{
+      const next=odeStepFixed(f,x,y,step,method);
+      if(!Number.isFinite(next)||Math.abs(next)>bound){stopped=true;reason='domínio/divergência';break;}
+      x+=step;y=next;points.push({x,y});
+    }catch{
+      stopped=true;reason='fora do domínio real';break;
+    }
+  }
+  if(direction*(end-x)>1e-12&&!stopped){stopped=true;reason='limite de passos';}
+  return {points,stopped,reason};
+}
 // Dormand–Prince 5(4). The tolerance controls a local embedded estimate, not global error.
 function adaptiveRK45(f,t0,initial,end,{maxStep=.1,rtol=1e-6,atol=1e-9,limit=10000,bound=1e6}={}) {
   if(![t0,end,maxStep,rtol,atol,bound,...initial].every(Number.isFinite)||maxStep<=0||rtol<1e-12||atol<1e-14||rtol>1||atol>1||!initial.length)throw Error('Configuração inválida do RK45.');
@@ -63,7 +91,7 @@ function scalarEquilibria(f,min,max,n=240){
   for(let i=0;i<=32;i++){let x=min+(max-min)*i/32;for(let k=0;k<45;k++){const v=safe(x),h=1e-5*Math.max(1,Math.abs(x)),d=(safe(x+h)-safe(x-h))/(2*h);if(!Number.isFinite(v)||!Number.isFinite(d)||Math.abs(d)<1e-14)break;if(v===0)break;const next=x-v/d;if(next<min||next>max||!Number.isFinite(next))break;x=next;}add(x);}
   return roots.sort((a,b)=>a-b);
 }
-if(typeof module!=='undefined')module.exports={adaptiveRK45,trackFrame,zeroContour,scalarEquilibria};
+if(typeof module!=='undefined')module.exports={odeEulerStep,odeHeunStep,odeRK4Step,odeStepFixed,integrateFixedODE,adaptiveRK45,trackFrame,zeroContour,scalarEquilibria};
 // A local sampling warning, not a proof of differentiability.
 function checkSmoothNeighborhood(f,x,y,h){
   const center=f(x,y);if(!Number.isFinite(center))throw Error('Ponto fora do domínio real.');
