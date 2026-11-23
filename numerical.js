@@ -36,6 +36,7 @@ function trackFrame(points,progress,key='t'){
 }
 // Sampled marching squares with a residual check to avoid drawing many pole crossings.
 function zeroContour(f,extent,n=80){
+  if(!Number.isFinite(extent)||extent<=0||!Number.isInteger(n)||n<2)return {segments:[],skipped:0};
   const values=[],segments=[],at=(i,j)=>values[i*(n+1)+j];let skipped=0;
   for(let i=0;i<=n;i++)for(let j=0;j<=n;j++){try{const v=f(-extent+2*extent*i/n,-extent+2*extent*j/n);values.push(Number.isFinite(v)?v:NaN);}catch{values.push(NaN);}}
   for(let i=0;i<n;i++)for(let j=0;j<n;j++){

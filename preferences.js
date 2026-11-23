@@ -1,6 +1,6 @@
 "use strict";
 const preferenceKey='spatial-math-preferences-v1';
-const preferenceIds=['palette-select',...Object.values(colorControls).map(el=>el.id),'intersection-width','axis-label-size','axis-show-numbers','axis-show-letters','grid-toggle','axes-toggle','color-toggle','mobile-speed','mobile-sensitivity','mobile-control-mode','mobile-left-handed','animation-speed','animation-follow'];
+const preferenceIds=['palette-select',...Object.values(colorControls).map(el=>el.id),'intersection-width','surface-opacity','axis-label-size','axis-show-numbers','axis-show-letters','grid-toggle','axes-toggle','color-toggle','mobile-speed','mobile-sensitivity','mobile-control-mode','mobile-left-handed','animation-speed','animation-follow'];
 const preferenceMessage=document.getElementById('preferences-status');
 function preferenceValue(el){return el.type==='checkbox'?el.checked:el.value;}
 const preferenceDefaults=Object.fromEntries(preferenceIds.map(id=>{const el=document.getElementById(id);return [id,el.type==='checkbox'?el.defaultChecked:el.tagName==='SELECT'?[...el.options].find(o=>o.defaultSelected)?.value||el.options[0].value:el.defaultValue];}));
@@ -23,6 +23,7 @@ function applyPreferences(settings){
  // Restore custom colors after selecting the palette, which sets its own defaults.
  for(const el of Object.values(colorControls)){const value=settings.inputs[el.id];if(validPreference(el,value))el.value=value;}
  document.getElementById('intersection-width-value').textContent=document.getElementById('intersection-width').value;
+ document.getElementById('surface-opacity-value').textContent=document.getElementById('surface-opacity').value+'%';
  document.getElementById('animation-speed-value').textContent=Number(document.getElementById('animation-speed').value).toFixed(2)+'×';
  applyMobileSettings();
  for(const id of ['grid-toggle','axes-toggle'])document.getElementById(id).dispatchEvent(new Event('change'));

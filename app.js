@@ -246,6 +246,10 @@ function graphGradientColor(t,target=new THREE.Color()){
   }
   return target.set(colorControls.graphLow.value).lerp(new THREE.Color(colorControls.graphHigh.value),t);
 }
+function surfaceOpacity(){
+  const value=Number(document.getElementById('surface-opacity')?.value);
+  return THREE.MathUtils.clamp(Number.isFinite(value)?value/100:.84,.2,1);
+}
 function makeSphere(radius) {
   const geometry = new THREE.SphereGeometry(radius, 48, 32);
   const positions = geometry.attributes.position;
@@ -263,8 +267,8 @@ function makeSphere(radius) {
   }
   geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: .84 }));
-  const wire = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, depthTest: false, depthWrite: false }));
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: surfaceOpacity(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
+  const wire = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, depthTest: true, depthWrite: false, transparent: true, opacity: .55 }));
   wire.renderOrder = 2;
   wire.frustumCulled = false;
   clearRenderGroup(surfaceGroup);
@@ -294,7 +298,7 @@ function makeAdditionalSurface(formulaText, graphIndex = 1) {
     }
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     surfaceGroup.add(
-      new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: .72 })),
+      new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: surfaceOpacity(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })),
       new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, depthTest: false, depthWrite: false, transparent: true, opacity: .55 }))
     );
     return;
@@ -310,9 +314,10 @@ function makeAdditionalSurface(formulaText, graphIndex = 1) {
   for (let index = 0; index < positions.count; index += 1) {
     const x = positions.getX(index);
     const y = positions.getY(index);
-    let z = Number(formula(x, y));
-    validSamples.push(Number.isFinite(z));
-    if (!Number.isFinite(z)) z = 0;
+    const sample=Number(formula(x,y));
+    let z=sample;
+    validSamples.push(Number.isFinite(sample)&&Math.abs(sample)<=5.5);
+    if (!Number.isFinite(sample)||Math.abs(sample)>5.5) z=0;
     z = Math.max(-5.5, Math.min(5.5, z));
     positions.setZ(index, z);
     heights.push(z);
@@ -335,7 +340,7 @@ function makeAdditionalSurface(formulaText, graphIndex = 1) {
     colors.push(surfaceColor.r, surfaceColor.g, surfaceColor.b);
   });
   geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: .72 }));
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: surfaceOpacity(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
   mesh.rotation.x = -Math.PI / 2;
   mesh.scale.y = -1;
   mesh.userData.formulaText = formulaText;
@@ -432,9 +437,10 @@ function makeSurface() {
   for (let i = 0; i < positions.count; i += 1) {
     const x = positions.getX(i);
     const y = positions.getY(i);
-    let z = Number(formula(x, y));
-    validSamples.push(Number.isFinite(z));
-    if (!Number.isFinite(z)) z = 0;
+    const sample=Number(formula(x,y));
+    let z=sample;
+    validSamples.push(Number.isFinite(sample)&&Math.abs(sample)<=5.5);
+    if (!Number.isFinite(sample)||Math.abs(sample)>5.5) z=0;
     z = Math.max(-5.5, Math.min(5.5, z));
     positions.setZ(i, z);
     heights.push(z);
@@ -460,7 +466,7 @@ function makeSurface() {
   });
   geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
-  const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: .84 });
+  const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: surfaceOpacity(), depthWrite: false, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
   const mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x = -Math.PI / 2;
   mesh.scale.y = -1;
@@ -729,6 +735,14 @@ document.querySelector('#color-toggle').addEventListener('change', refreshSceneP
 colorControls.background.addEventListener('input', updateBackground);
 Object.values(colorControls).filter((input) => input !== colorControls.background).forEach((input) => input.addEventListener('input', refreshScenePalette));
 document.querySelector('#intersection-width').addEventListener('input', (event) => { document.querySelector('#intersection-width-value').textContent = event.target.value; refreshActiveIntersection(); });
+document.querySelector('#surface-opacity').addEventListener('input', (event) => {
+  document.querySelector('#surface-opacity-value').textContent=event.target.value+'%';
+  surfaceGroup.traverse((object)=>{
+    if(!object.isMesh||object.material?.wireframe!==true)for(const material of Array.isArray(object?.material)?object.material:[object?.material].filter(Boolean)){
+      material.opacity=surfaceOpacity();material.depthWrite=false;material.needsUpdate=true;
+    }
+  });
+});
 paletteSelect.addEventListener('change', (event) => applyPalette(event.target.value));
 document.querySelector('#contour-count').addEventListener('input', (event) => { document.querySelector('#contour-count-value').textContent = event.target.value; updateAnalysis(); });
 document.querySelectorAll('.analysis-toggle').forEach((toggle) => {
