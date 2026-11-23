@@ -9,7 +9,7 @@ const preferenceIds=[
 ];
 const preferenceMessage=document.getElementById('preferences-status');
 function preferenceValue(el){return el.type==='checkbox'?el.checked:el.value;}
-const preferenceDefaults=Object.fromEntries(preferenceIds.map(id=>{const el=document.getElementById(id);return [id,el.type==='checkbox'?el.defaultChecked:el.tagName==='SELECT'?([..el.options].find(o=>o.defaultSelected)?.value||el.value):el.value];}));
+const preferenceDefaults=Object.fromEntries(preferenceIds.map(id=>{const el=document.getElementById(id);return [id,el.type==='checkbox'?el.defaultChecked:el.tagName==='SELECT'?([...el.options].find(o=>o.defaultSelected)?.value||el.value):el.value];}));
 
 function validPreference(el,value){
  if(!el)return false;
