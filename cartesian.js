@@ -44,6 +44,21 @@ function draw(){raf=0;if(!active())return;const d=dimensions(),ratio=Math.min(de
  for(const y of ticks(bounds.ymin,bounds.ymax)){const [,py]=map(0,y,d);ctx.strokeStyle=grid;ctx.globalAlpha=option('a11y-grid-strength','1');ctx.beginPath();ctx.moveTo(d.left,py);ctx.lineTo(d.w-d.right,py);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle=ink;ctx.textAlign='right';ctx.fillText(fmt(y),d.left-9,py+5);}
  const [ax,ay]=map(0,0,d);ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(d.left,Math.max(d.top,Math.min(d.h-d.bottom,ay)));ctx.lineTo(d.w-d.right,Math.max(d.top,Math.min(d.h-d.bottom,ay)));ctx.moveTo(Math.max(d.left,Math.min(d.w-d.right,ax)),d.top);ctx.lineTo(Math.max(d.left,Math.min(d.w-d.right,ax)),d.h-d.bottom);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle=ink;ctx.textAlign='right';ctx.fillText('x',d.w-6,d.h-d.bottom+23);ctx.textAlign='left';ctx.fillText('y',d.left-30,17);
  ctx.save();ctx.beginPath();ctx.rect(d.left,d.top,d.w-d.left-d.right,d.h-d.top-d.bottom);ctx.clip();
+ for(const f of functions){
+  const behavior=M.behavior(f.fn,...domain,240);
+  for(const interval of behavior.intervals){
+   let fill=null;
+   if(interval.kind.includes('crescente'))fill=isNightTheme()?'#56b4e9':'#0072b2';
+   else if(interval.kind.includes('decrescente'))fill=isNightTheme()?'#e69f00':'#a64b00';
+   else if(interval.kind.includes('constante'))fill=isNightTheme()?'#aab4bb':'#7d8a91';
+   if(!fill)continue;
+   const a=Math.max(interval.a,bounds.xmin),b=Math.min(interval.b,bounds.xmax);
+   if(a>=b)continue;
+   const [xa]=map(a,0,d),[xb]=map(b,0,d);
+   ctx.fillStyle=fill;ctx.globalAlpha=.08;ctx.fillRect(Math.min(xa,xb),d.top,Math.abs(xb-xa),d.h-d.top-d.bottom);
+   ctx.globalAlpha=1;
+  }
+ }
  if(area){const f=functions.find(f=>f.index===area.index);if(f){const min=Math.min(area.a,area.b),max=Math.max(area.a,area.b);ctx.fillStyle=color(f.index);ctx.globalAlpha=.17;for(let i=0;i<250;i++){const x=min+(max-min)*i/250,x2=min+(max-min)*(i+1)/250,y=M.value(f.fn,x),y2=M.value(f.fn,x2);if(!M.segmentOK(f.fn,{x,y},{x:x2,y:y2},bounds.ymax-bounds.ymin))continue;ctx.beginPath();ctx.moveTo(...map(x,0,d));ctx.lineTo(...map(x,y,d));ctx.lineTo(...map(x2,y2,d));ctx.lineTo(...map(x2,0,d));ctx.closePath();ctx.fill();}ctx.globalAlpha=1;}}
  for(const f of functions){ctx.strokeStyle=ctx.fillStyle=color(f.index);ctx.lineWidth=option('a11y-curve-width',3);ctx.setLineDash(linePatterns[f.style]);const pts=M.sample(f.fn,bounds.xmin,bounds.xmax,Math.min(1800,Math.round(d.w*1.4)));ctx.beginPath();for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i];if(M.segmentOK(f.fn,a,b,bounds.ymax-bounds.ymin)){ctx.moveTo(...map(a.x,a.y,d));ctx.lineTo(...map(b.x,b.y,d));}}ctx.stroke();ctx.setLineDash([]);for(let i=0;i<pts.length;i+=Math.max(1,Math.floor(pts.length/12))){const p=pts[i];if(Number.isFinite(p.y))mark(...map(p.x,p.y,d),f.style,option('a11y-marker-size',4));}
   for(const p of f.points||[]){ctx.fillStyle=color(f.index);mark(...map(p.x,p.y,d),f.style,option('a11y-marker-size',4)+2);}
@@ -73,7 +88,7 @@ function plot(options={}){
  analysis=cross.join('\n');fit();updateText();message('Gráficos atualizados. Consulte a descrição, as aproximações e a tabela de valores.');if(options.reveal!==false){show(true);controlDrawer.classList.remove('open');canvas.focus({preventScroll:true});}return true;
  }catch(e){message(e.message);return false;}
 }
-function computeTangent(){const f=selectedFunction(),x=readNumber('cart-point');if(x<domain[0]||x>domain[1])throw Error('Escolha um ponto dentro do intervalo informado.');const y=M.value(f.fn,x),slope=M.derivative(f.fn,x);tangent={index:f.index,x,y,slope};const text=`Tangente de f${f.index+1} em (${fmt(x)}; ${fmt(y)}): y ≈ ${fmt(y)} + (${fmt(slope)}) · (x − (${fmt(x)})). Derivada numérica ≈ ${fmt(slope)}.`;analysis=text+'\n'+analysis;message(text);updateText();selectInfoTab('analysis');if(!compactSidebar.matches)setInfoPanel(true);}
+function computeTangent(){const f=selectedFunction(),x=readNumber('cart-point');if(x<domain[0]||x>domain[1])throw Error('Escolha um ponto dentro do intervalo informado.');const y=M.value(f.fn,x),slope=M.derivative(f.fn,x);tangent={index:f.index,x,y,slope};const interpretation=Math.abs(slope)<=1e-7?'derivada aproximadamente zero: reta tangente horizontal e possível ponto crítico':slope>0?'derivada positiva: a função está crescendo perto deste ponto':'derivada negativa: a função está decrescendo perto deste ponto';const text=`Tangente de f${f.index+1} em (${fmt(x)}; ${fmt(y)}): y ≈ ${fmt(y)} + (${fmt(slope)}) · (x − (${fmt(x)})). Derivada numérica ≈ ${fmt(slope)}. Interpretação: ${interpretation}.`;analysis=text+'\n'+analysis;message(text);updateText();selectInfoTab('analysis');if(!compactSidebar.matches)setInfoPanel(true);}
 function computeIntegral(){const f=selectedFunction(),a=readNumber('cart-a'),b=readNumber('cart-b');if(Math.min(a,b)<domain[0]||Math.max(a,b)>domain[1])throw Error('Os limites devem estar dentro do intervalo informado.');const r=M.integral(f.fn,a,b);area={index:f.index,a,b};const text=`Integral definida de f${f.index+1}, de ${fmt(a)} a ${fmt(b)} ≈ ${fmt(r.value)}. Diferença entre refinamentos: ${r.difference.toExponential(2)} (não é uma cota garantida de erro). A região sombreada indica o intervalo; a integral considera o sinal.`;analysis=text+'\n'+analysis;message(text);updateText();selectInfoTab('analysis');if(!compactSidebar.matches)setInfoPanel(true);}
 function guard(fn){return()=>{try{fn();}catch(e){message(e.message);}};}
 function zoom(factor,cx=(bounds.xmin+bounds.xmax)/2,cy=(bounds.ymin+bounds.ymax)/2){const sx=(bounds.xmax-bounds.xmin)*factor,sy=(bounds.ymax-bounds.ymin)*factor;if(sx<1e-7||sx>2e7||sy<1e-7||sy>2e12)return;bounds={xmin:cx-sx/2,xmax:cx+sx/2,ymin:cy-sy/2,ymax:cy+sy/2};requestDraw();}
