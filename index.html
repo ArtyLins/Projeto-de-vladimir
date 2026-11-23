@@ -412,7 +412,7 @@
           <button type="button" data-welcome-view="examples"><span class="welcome-symbol" aria-hidden="true">▤</span><span><strong>Iniciar atividade guiada</strong><small>Aprenda com experiências e explicações.</small></span><span aria-hidden="true">↗</span></button>
         </div>
         <details id="welcome-navigation"><summary>Como navegar</summary><div><p><strong>Órbita:</strong> arraste para girar a câmera; use a roda do mouse para aproximar ou afastar. No celular, arraste e use dois dedos para ajustar a visão.</p><p><strong>Caminhada no computador:</strong> pressione F para ativar; clique na cena para olhar com o mouse. Use W/A/S/D para andar, Espaço para subir, Ctrl para descer e Shift para acelerar. Esc libera o mouse; F desativa a caminhada.</p><p><strong>Análise:</strong> clique numa superfície z=f(x,y) para inspecionar um ponto. R recentra a câmera no gráfico.</p></div></details>
-        <div class="welcome-footer"><button type="button" class="secondary-button" data-welcome-view="cartesian">Gráficos 2D</button><button type="button" class="secondary-button" data-welcome-view="accessibility">Acessibilidade</button><button id="welcome-tutorials" class="secondary-button" type="button" data-welcome-view="tutorials">Como usar o programa</button><button id="welcome-project" class="secondary-button" type="button">Abrir projeto salvo</button><button id="welcome-explore" class="primary-button" type="button">Explorar a cena</button></div>
+        <div class="welcome-footer"><button type="button" class="secondary-button" data-welcome-view="cartesian">Gráficos 2D</button><button type="button" class="secondary-button" data-welcome-view="accessibility">Acessibilidade</button><button id="welcome-tutorials" class="secondary-button" type="button" data-welcome-view="tutorials">Como usar o programa</button><button id="welcome-project" class="secondary-button" type="button">Abrir projeto salvo</button><button id="welcome-interactive-tutorial" class="primary-button" type="button">Fazer tutorial interativo</button><button id="welcome-explore" class="primary-button" type="button">Explorar a cena</button></div>
         <p class="welcome-hint">Escolha uma ferramenta no menu para começar.</p>
       </section>
       <div class="viewport-topbar">
@@ -499,7 +499,7 @@
   <script src="interface-tools.js"></script>
   <div class="mobile-quick-actions"><button id="mobile-return-scene" type="button">Voltar ao gráfico</button><button id="mobile-tools-toggle" type="button" aria-pressed="false">Recolher controles</button></div>
   <canvas id="mobile-axis-compass" width="192" height="192" aria-label="Orientação dos eixos X, Y e Z"></canvas>
-  <dialog id="mobile-tutorial"><h2 id="mobile-tutorial-title"></h2><p id="mobile-tutorial-text"></p><p id="mobile-tutorial-progress"></p><div><button id="mobile-tutorial-close" type="button">Fechar tutorial</button><button id="mobile-tutorial-next" type="button">Próximo</button></div></dialog>
+  <dialog id="mobile-tutorial"><h2 id="mobile-tutorial-title"></h2><p id="mobile-tutorial-text"></p><p id="mobile-tutorial-progress"></p><div><button id="mobile-tutorial-close" type="button">Pular tutorial</button><button id="mobile-tutorial-back" type="button" hidden>Anterior</button><button id="mobile-tutorial-next" type="button">Próximo</button></div></dialog>
   <script src="mobile-controls.js?v=tipografia-unificada-4"></script>
 
   <script src="mobile-enhancements.js?v=tipografia-unificada-4"></script>
