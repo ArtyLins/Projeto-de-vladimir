@@ -35,7 +35,10 @@ function savePreferences(){
 }
 
 function applyPreferences(settings){
- if(!settings||settings.version!==1||!settings.inputs||typeof settings.inputs!=='object'||Array.isArray(settings.inputs))return;
+ if(!settings||settings.version!==1||!settings.inputs||typeof settings.inputs!=='object'||Array.isArray(settings.inputs)){
+  try{localStorage.removeItem(preferenceKey);}catch{}
+  return;
+ }
  let restored=0;
  for(const id of preferenceIds){
   const el=document.getElementById(id),value=settings.inputs[id];
@@ -49,6 +52,10 @@ function applyPreferences(settings){
  if(typeof applyMobileSettings==='function')applyMobileSettings();
  if(typeof applyLayerVisibility==='function')applyLayerVisibility();
  for(const id of ['grid-toggle','axes-toggle'])document.getElementById(id).dispatchEvent(new Event('change'));
+ for(const id of ['a11y-scale','a11y-motion','a11y-contrast','a11y-shortcuts','a11y-curve-width','a11y-marker-size','a11y-label-size','a11y-grid-strength','a11y-spacing','reading-size','cart-audio-events','cart-audio-points']){
+  const el=document.getElementById(id);
+  if(el)el.dispatchEvent(new Event('change'));
+ }
  if(settings.theme==='dark'||settings.theme==='light')setNightTheme(settings.theme==='dark');else if(typeof refreshScenePalette==='function')refreshScenePalette();
  if(typeof refreshActiveIntersection==='function')refreshActiveIntersection();
  return restored;
@@ -67,7 +74,13 @@ try{
 for(const type of ['input','change'])document.addEventListener(type,event=>{if(preferenceIds.includes(event.target.id))savePreferences();});
 document.getElementById('theme-toggle').addEventListener('click',savePreferences);
 document.getElementById('preferences-reset').addEventListener('click',()=>{
- try{localStorage.removeItem(preferenceKey);localStorage.removeItem('spatial-mobile-settings');}catch{}
+ try{
+  localStorage.removeItem(preferenceKey);
+  localStorage.removeItem('spatial-mobile-settings');
+  localStorage.removeItem('spatial-accessibility-v1');
+  localStorage.removeItem('spatial-advanced-accessibility-v1');
+  localStorage.removeItem('spatial-math-theme');
+ }catch{}
  applyPreferences({version:1,inputs:preferenceDefaults,theme:'light'});
  if(typeof stopCues==='function')stopCues();
  savePreferences();
