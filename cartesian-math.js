@@ -49,13 +49,21 @@ function integral(fn,a,b){
  return {value:finer,difference:d};
 }
 function behavior(fn,min,max,n=400){
- const points=sample(fn,min,max,n),finite=points.map(p=>p.y).filter(Number.isFinite),span=finite.length?Math.max(...finite)-Math.min(...finite):1,intervals=[],gaps=[];
- for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i];let kind;
+ const step=(max-min)/n,points=sample(fn,min,max,n),intervals=[],gaps=[];
+ for(let i=1;i<points.length;i++){
+  const a=points[i-1],b=points[i];let kind;
   if(!Number.isFinite(a.y)||!Number.isFinite(b.y))kind='sem amostra finita';
-  else if(!segmentOK(fn,a,b,Math.max(span,1e-8)))kind='possível descontinuidade ou variação rápida';
-  else{const diff=b.y-a.y,tol=1e-10*Math.max(Math.abs(a.y),Math.abs(b.y),span,1e-300);kind=Math.abs(diff)<=tol?'aproximadamente constante':diff>0?'crescente nas amostras':'decrescente nas amostras';}
+  else{
+   const x=(a.x+b.x)/2;let slope;
+   try{slope=derivative(fn,x);}catch{slope=NaN;}
+   if(!Number.isFinite(slope))kind='possível descontinuidade, quebra ou variação rápida';
+   else{
+    const tol=1e-7*(1+Math.abs(slope)); // A sinalização usa derivada, não apenas diferenças de y.
+    kind=Math.abs(slope)<=tol?'aproximadamente constante':slope>0?'crescente (f′(x)>0)':'decrescente (f′(x)<0)';
+   }
+  }
   const list=kind.includes('amostra finita')||kind.startsWith('possível')?gaps:intervals,last=list.at(-1);
-  if(last&&last.kind===kind&&Math.abs(last.b-a.x)<(max-min)*1e-9)last.b=b.x;else list.push({a:a.x,b:b.x,kind});
+  if(last&&last.kind===kind&&Math.abs(last.b-a.x)<=step*1.001)last.b=b.x;else list.push({a:a.x,b:b.x,kind});
  }
  return {intervals:intervals.slice(0,24),gaps:gaps.slice(0,24),truncated:intervals.length>24||gaps.length>24};
 }
