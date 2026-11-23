@@ -71,6 +71,7 @@ const walkToggle = document.querySelector('#walk-toggle');
 let walkingMode = false;
 let yaw = 0;
 let pitch = 0;
+let desktopWalkAccelerated = false;
 
 function syncWalkLook() {
   const direction = new THREE.Vector3();
@@ -100,12 +101,15 @@ function setWalkingMode(enabled) {
   controls.enabled = true;
   viewport.classList.toggle('walking-mode', enabled);
   if (enabled) {
+    closeModuleCatalog();
+    controlDrawer.classList.remove('open');
     syncWalkLook();
     requestWalkPointerLock();
     status.textContent = 'Modo caminhada ativo · clique no espaço 3D para olhar';
     status.style.color = 'var(--deep-mint)';
   } else {
     movementKeys.clear();
+    desktopWalkAccelerated = false;
     if (document.pointerLockElement === renderer.domElement) document.exitPointerLock();
     controls.target.copy(graphTarget);
     camera.rotation.order = 'XYZ';
@@ -138,12 +142,15 @@ function updateMovement(delta) {
   if (movementKeys.has('KeyD')) movement.add(right);
   if (movementKeys.has('KeyA')) movement.sub(right);
   if (movementKeys.has('Space')) movement.y += 1;
+  if (movementKeys.has('ControlLeft') || movementKeys.has('ControlRight')) movement.y -= 1;
   if (movementKeys.has('ShiftLeft') || movementKeys.has('ShiftRight')) movement.y -= 1;
 
   if(window.mobileJoystickVec){movement.addScaledVector(right,window.mobileJoystickVec.x);movement.addScaledVector(forward,-window.mobileJoystickVec.y);}
   if (!movement.lengthSq()) return;
   if(movement.length()>1)movement.normalize();
-  movement.multiplyScalar(movementSpeed * delta * (window.getMobileSpeed?.()||1));
+  const configuredSpeed = Number(window.getMobileSpeed?.()||1);
+  const speedMultiplier = desktopWalkAccelerated ? 2 : 1;
+  movement.multiplyScalar(movementSpeed * delta * (Number.isFinite(configuredSpeed)&&configuredSpeed>0?configuredSpeed:1) * speedMultiplier);
   camera.position.add(movement);
   controls.target.add(movement);
 }
@@ -156,13 +163,20 @@ window.addEventListener('keydown', (event) => {
     event.preventDefault();
     return;
   }
-  if (walkingMode && ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space', 'ShiftLeft', 'ShiftRight'].includes(event.code)) {
+  if (walkingMode && (event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
+    desktopWalkAccelerated = true;
+    event.preventDefault();
+  }
+  if (walkingMode && ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space', 'ControlLeft', 'ControlRight'].includes(event.code)) {
     movementKeys.add(event.code);
     event.preventDefault();
   }
 });
-window.addEventListener('keyup', (event) => movementKeys.delete(event.code));
-window.addEventListener('blur', () => movementKeys.clear());
+window.addEventListener('keyup', (event) => {
+  movementKeys.delete(event.code);
+  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') desktopWalkAccelerated = false;
+});
+window.addEventListener('blur', () => {movementKeys.clear();desktopWalkAccelerated=false;});
 viewport.addEventListener('click', selectSurfacePoint);
 viewport.addEventListener('click', () => {
   requestWalkPointerLock();
@@ -180,8 +194,10 @@ document.addEventListener('pointerlockchange', () => {
 });
 document.addEventListener('mousemove', (event) => {
   if (!walkingMode || document.pointerLockElement !== renderer.domElement) return;
-  yaw -= event.movementX * 0.002 * (window.getMobileSensitivity?.()||1);
-  pitch -= event.movementY * 0.002 * (window.getMobileSensitivity?.()||1);
+  const sensitivity = Number(window.getMobileSensitivity?.()||1);
+  const safeSensitivity = Number.isFinite(sensitivity)&&sensitivity>0?sensitivity:1;
+  yaw -= event.movementX * 0.002 * safeSensitivity;
+  pitch -= event.movementY * 0.002 * safeSensitivity;
   pitch = THREE.MathUtils.clamp(pitch, -Math.PI / 2 + 0.05, Math.PI / 2 - 0.05);
   applyWalkLook();
 });
@@ -1724,7 +1740,7 @@ const exampleGuides={
   saddle:'HESSIANA E SELA\nf(x,y)=(x²−y²)/4.\nNa origem, ∇f=0 e a Hessiana tem autovalores de sinais opostos.\nObserve que a superfície sobe em uma direção e desce em outra. Selecione outros pontos para comparar o gradiente e o plano tangente.',
   integral:'REGIÃO TRIANGULAR\n0≤x≤1 e 0≤y≤1−x, com integrando x+y.\nA integral exata vale 1/3. O limite superior interno depende da variável externa x.\nCompare os resultados com n e 2n subdivisões. A diferença entre eles indica refinamento, sem garantir o erro.'
 };
-function openLabPanel(view){if(typeof hideWelcome==='function')hideWelcome();const panel=document.querySelector(`[data-panel="${view}"]`);if(!panel)return;document.querySelectorAll('.menu-panel').forEach(el=>el.classList.toggle('active',el===panel));controlDrawer.classList.add('open');controlDrawer.scrollTop=0;closeModuleCatalog();syncLabNavigation();}
+function openLabPanel(view){if(typeof hideWelcome==='function')hideWelcome();if(walkingMode){walkToggle.checked=false;setWalkingMode(false);}const panel=document.querySelector(`[data-panel="${view}"]`);if(!panel)return;document.querySelectorAll('.menu-panel').forEach(el=>el.classList.toggle('active',el===panel));controlDrawer.classList.add('open');controlDrawer.scrollTop=0;closeModuleCatalog();syncLabNavigation();}
 function loadGuidedExample(){
   const choice=document.getElementById('example-choice').value;document.getElementById('example-guide').textContent=exampleGuides[choice];
   const set=(id,value)=>{const el=document.getElementById(id);if(el.type==='checkbox')el.checked=value;else el.value=String(value);};
